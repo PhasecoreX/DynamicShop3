@@ -259,7 +259,8 @@ public final class ItemPalette extends InGameUI
                 continue;
             }
 
-            if (Material.POTION == m || Material.LINGERING_POTION == m || Material.SPLASH_POTION == m || Material.ENCHANTED_BOOK == m)
+            // Skip special case items (ones with ItemMeta)
+            if (Material.POTION == m || Material.LINGERING_POTION == m || Material.SPLASH_POTION == m || Material.TIPPED_ARROW == m || Material.ENCHANTED_BOOK == m)
             {
                 continue;
             }
@@ -270,6 +271,7 @@ public final class ItemPalette extends InGameUI
             }
         }
 
+        // Add potions
         Material[] potionMat = {Material.POTION, Material.LINGERING_POTION, Material.SPLASH_POTION};
         for (Material mat : potionMat)
         {
@@ -283,6 +285,17 @@ public final class ItemPalette extends InGameUI
             }
         }
 
+        // Add tipped arrows
+        for (PotionType pt : PotionType.values())
+        {
+            if (PotionType.UNCRAFTABLE.equals(pt) || basePotions.contains(pt))
+            {
+                continue;
+            }
+            allItems.add(getPotionItemStack(Material.TIPPED_ARROW, pt));
+        }
+
+        // Add enchanted books
         for (Enchantment enchant : Enchantment.values())
         {
             for (int level = enchant.getStartLevel(); level <= enchant.getMaxLevel(); level++)
@@ -683,7 +696,7 @@ public final class ItemPalette extends InGameUI
     {
         ItemStack newItem = new ItemStack(ref.getType());
 
-        if (ref.getType() == Material.POTION || ref.getType() == Material.LINGERING_POTION || ref.getType() == Material.SPLASH_POTION)
+        if (ref.getType() == Material.POTION || ref.getType() == Material.LINGERING_POTION || ref.getType() == Material.SPLASH_POTION || ref.getType() == Material.TIPPED_ARROW)
         {
             PotionMeta pmRef = (PotionMeta) ref.getItemMeta();
             PotionMeta pmCopy = (PotionMeta) newItem.getItemMeta();
