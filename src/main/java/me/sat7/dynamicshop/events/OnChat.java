@@ -82,7 +82,7 @@ public class OnChat implements Listener
             String s = userData.replace("waitforPalette", "");
             int subType = Integer.parseInt(s);
 
-            String[] userInteractData = UserUtil.userInteractItem.get(p.getUniqueId()).split("/");
+            String[] userInteractData = UserUtil.userInteractItem.get(uuid).split("/");
             UserUtil.userTempData.put(uuid, "");
             DynaShopAPI.openItemPalette(p, subType, userInteractData[0], Integer.parseInt(userInteractData[1]), 1, e.getMessage());
             cancelRunnable(p);

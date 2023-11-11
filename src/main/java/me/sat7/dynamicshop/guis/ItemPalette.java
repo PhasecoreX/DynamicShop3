@@ -578,6 +578,7 @@ public final class ItemPalette extends InGameUI
         {
             player.closeInventory();
 
+            UserUtil.userInteractItem.put(player.getUniqueId(), shopName + "/" + shopSlotIndex);
             UserUtil.userTempData.put(player.getUniqueId(), "waitforPalette" + uiSubType);
             OnChat.WaitForInput(player);
 
