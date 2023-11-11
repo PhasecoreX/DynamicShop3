@@ -219,7 +219,7 @@ public final class Shop extends InGameUI
 
                     boolean showValueChange = shopData.contains("Options.flag.showvaluechange");
 
-                    boolean isIntTypeCurrency = false;
+                    boolean isIntTypeCurrency = shopData.contains("Options.flag.integeronly");
                     String currencyKey = "";
                     if (ShopUtil.GetCurrency(shopData).equalsIgnoreCase(Constants.S_JOBPOINT))
                     {
@@ -446,7 +446,7 @@ public final class Shop extends InGameUI
                 else if (ShopUtil.GetCurrency(shopData).equalsIgnoreCase(Constants.S_EXP))
                     temp = n(ShopUtil.getShopBalance(shopName), true) + t(player,"EXP_POINTS");
                 else
-                    temp = n(ShopUtil.getShopBalance(shopName));
+                    temp = n(ShopUtil.getShopBalance(shopName), shopData.contains("Options.flag.integeronly"));
 
                 finalShopBalanceText += t(player, "SHOP.SHOP_INFO_DASH") + temp + "\n";
             } else

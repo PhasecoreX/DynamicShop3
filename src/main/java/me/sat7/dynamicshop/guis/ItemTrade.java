@@ -214,7 +214,7 @@ public final class ItemTrade extends InGameUI
             else if (ShopUtil.GetCurrency(shopData).equalsIgnoreCase(Constants.S_EXP))
                 balStr = n(d, true) + t(player, "EXP_POINTS");
             else
-                balStr = n(d);
+                balStr = n(d, shopData.contains("Options.flag.integeronly"));
         } else
         {
             balStr = t(player, "TRADE.SHOP_BAL_INF");
@@ -292,7 +292,7 @@ public final class ItemTrade extends InGameUI
             String lore;
             String priceText;
 
-            boolean isIntTypeCurrency = false;
+            boolean isIntTypeCurrency = shopData.contains("Options.flag.integeronly");
             String currencyKey = "";
             if (ShopUtil.GetCurrency(shopData).equalsIgnoreCase(Constants.S_JOBPOINT))
             {
