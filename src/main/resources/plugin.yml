@@ -1,15 +1,15 @@
 name: DynamicShop
 version: ${project.version}
 main: me.sat7.dynamicshop.DynamicShop
-depend: [Vault]
-softdepend: [PlaceholderAPI, Jobs, LocaleLib, PlayerPoints]
+depend: [ Vault ]
+softdepend: [ PlaceholderAPI, Jobs, LocaleLib, PlayerPoints ]
 api-version: 1.16
-authors: [sat7, jpenilla, Multitallented, Chris6ix, KevinDaGame, FlorianKoerner, Kapitowa, LincolnJota]
+authors: [ sat7, jpenilla, Multitallented, Chris6ix, KevinDaGame, FlorianKoerner, Kapitowa, LincolnJota, PhasecoreX ]
 description: Full GUI shop with dynamic prices
 commands:
   DynamicShop:
     description: "Full GUI shop with dynamic prices"
-    aliases: [ds]
+    aliases: [ ds ]
   shop:
     description: "Open shop menu"
   sell:
