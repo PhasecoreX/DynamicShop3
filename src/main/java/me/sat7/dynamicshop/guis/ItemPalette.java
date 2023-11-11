@@ -212,10 +212,10 @@ public final class ItemPalette extends InGameUI
         }
     }
 
-    public ItemStack getPotionItemStack(Material potionMat, PotionType type, boolean extend, boolean upgraded){
+    public ItemStack getPotionItemStack(Material potionMat, PotionType type){
         ItemStack potion = new ItemStack(potionMat, 1);
         PotionMeta meta = (PotionMeta) potion.getItemMeta();
-        meta.setBasePotionData(new PotionData(type, extend, upgraded));
+        meta.setBasePotionType(type);
         potion.setItemMeta(meta);
         return potion;
     }
@@ -233,25 +233,13 @@ public final class ItemPalette extends InGameUI
         }
 
         Material[] potionMat = {Material.POTION, Material.LINGERING_POTION, Material.SPLASH_POTION};
-        for (Material mat : potionMat)
-        {
-            for (PotionType pt : PotionType.values())
-            {
-                if (pt.isExtendable() && pt.isUpgradeable())
+        for (Material mat : potionMat) {
+            for (PotionType pt : PotionType.values()) {
+                if (PotionType.UNCRAFTABLE.equals(pt))
                 {
-                    allItems.add(getPotionItemStack(mat, pt, true, false));
-                    allItems.add(getPotionItemStack(mat, pt, false, true));
+                    continue;
                 }
-                else if (pt.isExtendable())
-                {
-                    allItems.add(getPotionItemStack(mat, pt, true, false));
-                }
-                else if (pt.isUpgradeable())
-                {
-                    allItems.add(getPotionItemStack(mat, pt, false, true));
-                }
-
-                allItems.add(getPotionItemStack(mat, pt, false, false));
+                allItems.add(getPotionItemStack(mat, pt));
             }
         }
 
@@ -533,7 +521,7 @@ public final class ItemPalette extends InGameUI
             PotionMeta pmRef = (PotionMeta)ref.getItemMeta();
             PotionMeta pmCopy = (PotionMeta)newItem.getItemMeta();
 
-            pmCopy.setBasePotionData(pmRef.getBasePotionData());
+            pmCopy.setBasePotionType(pmRef.getBasePotionType());
             newItem.setItemMeta(pmCopy);
         }
 
