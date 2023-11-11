@@ -44,7 +44,7 @@ public final class Reload extends DSCMD
         StartPage.ccStartPage.reload();
         DynamicShop.ccSign.reload();
 
-        WorthUtil.ccWorth.reload();
+        WorthUtil.reload();
         WorthUtil.setupWorthFile();
 
         SoundUtil.ccSound.reload();

@@ -795,6 +795,17 @@ public final class ShopUtil
         Bukkit.getScheduler().runTaskLater(DynamicShop.plugin, player::closeInventory, 2);
     }
 
+    public static DSItem getNewDSItem(ItemStack itemStack)
+    {
+        DSItem result = new DSItem(itemStack, 1, 1, 0.0001, -1, 10000, 10000);
+        double worth = WorthUtil.getWorth(itemStack);
+        if (worth > 0) {
+            int sugMid = ShopUtil.CalcRecommendedMedian(worth, ConfigUtil.GetNumberOfPlayer());
+            result = new DSItem(itemStack, worth, worth, 0.0001, -1, sugMid, sugMid);
+        }
+        return result;
+    }
+
     public static void SetToRecommendedValueAll(String shop, CommandSender sender)
     {
         CustomConfig data = ShopUtil.shopConfigFiles.get(shop);
@@ -812,15 +823,7 @@ public final class ShopUtil
 
                 String itemName = data.get().getString(itemIndex + ".mat");
 
-                double worth = WorthUtil.ccWorth.get().getDouble(itemName);
-                if (worth == 0)
-                {
-                    itemName = itemName.replace("-", "");
-                    itemName = itemName.replace("_", "");
-                    itemName = itemName.toLowerCase();
-
-                    worth = WorthUtil.ccWorth.get().getDouble(itemName);
-                }
+                double worth = WorthUtil.getWorth(itemName);
 
                 if (worth != 0)
                 {

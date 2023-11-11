@@ -10,6 +10,7 @@ Shop.DeliveryChargeMin: 1
 Shop.DeliveryChargeMax: 25
 Shop.NumberOfPlayer: 10
 Shop.UseLegacyStockStabilization: false
+Shop.WorthMultiplier: 1.0
 UI.DisplayStockAsStack: false
 UI.OpenStartPageWhenClickCloseButton: true
 UI.CloseButtonIcon : BARRIER

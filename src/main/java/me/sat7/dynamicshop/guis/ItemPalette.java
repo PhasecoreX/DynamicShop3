@@ -90,7 +90,7 @@ public final class ItemPalette extends InGameUI
         if(uiSubType == 0)
         {
             if(!paletteList.isEmpty())
-                CreateButton(ADD_ALL, Material.YELLOW_STAINED_GLASS_PANE, t(player, "PALETTE.ADD_ALL"), t(player, "PALETTE.ADD_ALL_LORE_LOCKED"));
+                CreateButton(ADD_ALL, Material.YELLOW_STAINED_GLASS_PANE, t(player, "PALETTE.ADD_ALL"), t(player, "PALETTE.ADD_ALL_LORE"));
         }
 
         // Search Button
@@ -108,7 +108,7 @@ public final class ItemPalette extends InGameUI
 
         if (e.getSlot() == CLOSE) CloseUI();
         else if (e.getSlot() == PAGE) MovePage(e.isLeftClick(), e.isRightClick());
-        else if (e.getSlot() == ADD_ALL && e.isLeftClick() && uiSubType == 0) AddAll(e.isShiftClick());
+        else if (e.getSlot() == ADD_ALL && e.isLeftClick() && uiSubType == 0) AddAll();
         else if (e.getSlot() == SEARCH) OnClickSearch(e.isLeftClick(), e.isRightClick());
         else if (e.getSlot() <= 45) OnClickItem(e.isLeftClick(), e.isRightClick(), e.isShiftClick(), e.getCurrentItem());
     }
@@ -125,7 +125,7 @@ public final class ItemPalette extends InGameUI
     {
         ArrayList<ItemStack> paletteList = new ArrayList<>();
 
-        if (search.length() > 0)
+        if (!search.isEmpty())
         {
             for (ItemStack itemStack : sortedList)
             {
@@ -357,14 +357,8 @@ public final class ItemPalette extends InGameUI
         DynaShopAPI.openItemPalette(player, uiSubType, shopName, shopSlotIndex, targetPage, this.search);
     }
 
-    private void AddAll(boolean applyRecommend)
+    private void AddAll()
     {
-        if (applyRecommend)
-        {
-            DynamicShop.PaidOnlyMsg(player);
-            return;
-        }
-
         if(paletteList.isEmpty())
             return;
 
@@ -381,8 +375,7 @@ public final class ItemPalette extends InGameUI
 
                 targetSlotIdx = ShopUtil.findEmptyShopSlot(shopName, shopSlotIndex, true);
 
-                DSItem temp = new DSItem(itemStack, 1, 1, 0.0001, -1, 10000, 10000);
-                ShopUtil.addItemToShop(shopName, targetSlotIdx, temp);
+                ShopUtil.addItemToShop(shopName, targetSlotIdx, ShopUtil.getNewDSItem(itemStack));
             }
         }
         DynaShopAPI.openShopGui(player, shopName, 1);
@@ -417,15 +410,14 @@ public final class ItemPalette extends InGameUI
         {
             if (isLeft)
             {
+                DSItem dsItem = ShopUtil.getNewDSItem(itemStack);
                 if (isShift)
                 {
-                    DSItem dsItem = new DSItem(itemStack, 10, 10, 0.0001, -1, 10000, 10000);
                     DynaShopAPI.openItemSettingGui(player, shopName, shopSlotIndex,0, dsItem);
                 } else
                 {
                     int targetSlotIdx = ShopUtil.findEmptyShopSlot(shopName, shopSlotIndex, true);
-                    DSItem temp = new DSItem(itemStack, 1, 1, 0.0001, -1, 10000, 10000);
-                    ShopUtil.addItemToShop(shopName, targetSlotIdx, temp);
+                    ShopUtil.addItemToShop(shopName, targetSlotIdx, dsItem);
                     player.sendMessage(DynamicShop.dsPrefix(player) + t(player, "MESSAGE.ITEM_ADDED"));
 
                     DynaShopAPI.openItemPalette(player, uiSubType, shopName, shopSlotIndex, currentPage, search);
@@ -480,7 +472,7 @@ public final class ItemPalette extends InGameUI
         {
             if (isLeft)
             {
-                DSItem dsItem = new DSItem(item, 10, 10, 0.0001, -1, 10000, 10000);
+                DSItem dsItem = ShopUtil.getNewDSItem(item);
                 DynaShopAPI.openItemSettingGui(player, shopName, shopSlotIndex, 0, dsItem);
             } else if (isRight)
             {

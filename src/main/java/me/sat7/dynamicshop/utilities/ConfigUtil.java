@@ -172,6 +172,11 @@ public final class ConfigUtil
         return config.getBoolean("Shop.UseLegacyStockStabilization");
     }
 
+    public static double GetWorthMultiplier()
+    {
+        return config.getDouble("Shop.WorthMultiplier");
+    }
+
     // [ UI ] ==========
 
     public static boolean GetDisplayStockAsStack()

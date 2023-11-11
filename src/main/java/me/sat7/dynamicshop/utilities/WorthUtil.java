@@ -1,14 +1,39 @@
 package me.sat7.dynamicshop.utilities;
 
 import me.sat7.dynamicshop.files.CustomConfig;
+import org.bukkit.inventory.ItemStack;
 
 public final class WorthUtil
 {
-    public static CustomConfig ccWorth = new CustomConfig();
+    private static final CustomConfig ccWorth = new CustomConfig();
 
     private WorthUtil()
     {
 
+    }
+
+    public static double getWorth(ItemStack itemStack)
+    {
+        return getWorth(itemStack.getType().name());
+    }
+
+    public static double getWorth(String itemName)
+    {
+        double worth = ccWorth.get().getDouble(itemName);
+        if (worth == 0)
+        {
+            itemName = itemName.replace("-", "");
+            itemName = itemName.replace("_", "");
+            itemName = itemName.toLowerCase();
+
+            worth = ccWorth.get().getDouble(itemName);
+        }
+        return worth * ConfigUtil.GetWorthMultiplier();
+    }
+
+    public static void reload()
+    {
+        ccWorth.reload();
     }
 
     public static void setupWorthFile()

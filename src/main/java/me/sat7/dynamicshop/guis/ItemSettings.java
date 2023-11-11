@@ -236,7 +236,7 @@ public final class ItemSettings extends InGameUI
         inventory.setItem(SAMPLE_ITEM, dsItem.getItemStack()); // 아이탬 견본
         inventory.getItem(SAMPLE_ITEM).setAmount(1);
 
-        double worth = TryGetWorth(dsItem.getItemStack().getType().name());
+        double worth = WorthUtil.getWorth(dsItem.getItemStack());
         String recommendLore;
         if (worth == 0)
         {
@@ -502,7 +502,7 @@ public final class ItemSettings extends InGameUI
 
     private void SetToRecommend()
     {
-        double worth = TryGetWorth(dsItem.getItemStack().getType().name());
+        double worth = WorthUtil.getWorth(dsItem.getItemStack());
 
         if (worth == 0)
         {
@@ -516,21 +516,6 @@ public final class ItemSettings extends InGameUI
 
             player.sendMessage(DynamicShop.dsPrefix(player) + t(player, "MESSAGE.RECOMMEND_APPLIED").replace("{playerNum}", String.valueOf(ConfigUtil.GetNumberOfPlayer())));
         }
-    }
-
-    private double TryGetWorth(String itemName)
-    {
-        double worth = WorthUtil.ccWorth.get().getDouble(itemName);
-        if (worth == 0)
-        {
-            itemName = itemName.replace("-", "");
-            itemName = itemName.replace("_", "");
-            itemName = itemName.toLowerCase();
-
-            worth = WorthUtil.ccWorth.get().getDouble(itemName);
-        }
-
-        return worth;
     }
 
     private void ChangeTab(int tabIndex)
