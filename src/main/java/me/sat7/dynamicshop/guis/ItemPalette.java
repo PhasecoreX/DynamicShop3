@@ -14,6 +14,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionType;
@@ -259,8 +260,7 @@ public final class ItemPalette extends InGameUI
                 continue;
             }
 
-            // Skip special case items (ones with ItemMeta)
-            if (Material.POTION == m || Material.LINGERING_POTION == m || Material.SPLASH_POTION == m || Material.TIPPED_ARROW == m || Material.ENCHANTED_BOOK == m)
+            if (Material.POTION == m || Material.LINGERING_POTION == m || Material.SPLASH_POTION == m || Material.TIPPED_ARROW == m || Material.ENCHANTED_BOOK == m || Material.FIREWORK_ROCKET == m)
             {
                 continue;
             }
@@ -306,6 +306,16 @@ public final class ItemPalette extends InGameUI
                 book.setItemMeta(meta);
                 allItems.add(book);
             }
+        }
+
+        // Add firework rockets (the durations that creative mode shows)
+        for (int duration = 1; duration < 4; duration++)
+        {
+            ItemStack firework = new ItemStack(Material.FIREWORK_ROCKET, 1);
+            FireworkMeta fireworkMeta = (FireworkMeta) firework.getItemMeta();
+            fireworkMeta.setPower(duration);
+            firework.setItemMeta(fireworkMeta);
+            allItems.add(firework);
         }
 
         allItems.sort(((Comparator<ItemStack>) (o1, o2) ->
@@ -364,6 +374,10 @@ public final class ItemPalette extends InGameUI
         else if (itemMeta instanceof EnchantmentStorageMeta)
         {
             ret = ret + "_" + getNormalizedEnchantmentName((EnchantmentStorageMeta) itemMeta);
+        }
+        else if (itemMeta instanceof FireworkMeta)
+        {
+            ret = ret + "_" + String.format("%08d", ((FireworkMeta) itemMeta).getPower());
         }
 
         return ret;
@@ -715,6 +729,15 @@ public final class ItemPalette extends InGameUI
                 metaCopy.addStoredEnchant(entry.getKey(), entry.getValue(), false);
             }
             newItem.setItemMeta(metaCopy);
+        }
+
+        else if (ref.getType() == Material.FIREWORK_ROCKET)
+        {
+            FireworkMeta fireRef = (FireworkMeta) ref.getItemMeta();
+            FireworkMeta fireCopy = (FireworkMeta) newItem.getItemMeta();
+
+            fireCopy.setPower(fireRef.getPower());
+            newItem.setItemMeta(fireCopy);
         }
 
         return newItem;
