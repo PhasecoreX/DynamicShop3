@@ -8,19 +8,18 @@ import me.sat7.dynamicshop.utilities.ShopUtil;
 import me.sat7.dynamicshop.utilities.UserUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static me.sat7.dynamicshop.utilities.LangUtil.t;
 import static me.sat7.dynamicshop.utilities.MathUtil.Clamp;
@@ -260,7 +259,7 @@ public final class ItemPalette extends InGameUI
                 continue;
             }
 
-            if (Material.POTION == m || Material.LINGERING_POTION == m || Material.SPLASH_POTION == m)
+            if (Material.POTION == m || Material.LINGERING_POTION == m || Material.SPLASH_POTION == m || Material.ENCHANTED_BOOK == m)
             {
                 continue;
             }
@@ -281,6 +280,18 @@ public final class ItemPalette extends InGameUI
                     continue;
                 }
                 allItems.add(getPotionItemStack(mat, pt));
+            }
+        }
+
+        for (Enchantment enchant : Enchantment.values())
+        {
+            for (int level = enchant.getStartLevel(); level <= enchant.getMaxLevel(); level++)
+            {
+                ItemStack book = new ItemStack(Material.ENCHANTED_BOOK, 1);
+                EnchantmentStorageMeta meta = (EnchantmentStorageMeta) book.getItemMeta();
+                meta.addStoredEnchant(enchant, level, false);
+                book.setItemMeta(meta);
+                allItems.add(book);
             }
         }
 
@@ -337,6 +348,10 @@ public final class ItemPalette extends InGameUI
         {
             ret = ret + "_" + getNormalizedPotionName((PotionMeta) itemMeta);
         }
+        else if (itemMeta instanceof EnchantmentStorageMeta)
+        {
+            ret = ret + "_" + getNormalizedEnchantmentName((EnchantmentStorageMeta) itemMeta);
+        }
 
         return ret;
     }
@@ -371,6 +386,27 @@ public final class ItemPalette extends InGameUI
         else if (result.startsWith("STRONG_"))
         {
             result = result.substring(7) + "_STRONG";
+        }
+        return result;
+    }
+
+    @NotNull
+    private static String getNormalizedEnchantmentName(EnchantmentStorageMeta itemMeta)
+    {
+        String result = "";
+        for (Map.Entry<Enchantment, Integer> entry : itemMeta.getStoredEnchants().entrySet())
+        {
+            String enchantName = entry.getKey().getKey().getKey();
+            if (enchantName.endsWith("_curse"))
+            {
+                // Curses are last
+                enchantName = "zzzzzzzz_" + enchantName;
+            }
+            enchantName = enchantName + "_" + entry.getValue().toString();
+            if (result.isEmpty() || result.compareTo(enchantName) > 0)
+            {
+                result = enchantName;
+            }
         }
         return result;
     }
@@ -656,6 +692,19 @@ public final class ItemPalette extends InGameUI
             newItem.setItemMeta(pmCopy);
         }
 
+        else if (ref.getType() == Material.ENCHANTED_BOOK)
+        {
+            EnchantmentStorageMeta metaRef = (EnchantmentStorageMeta) ref.getItemMeta();
+            EnchantmentStorageMeta metaCopy = (EnchantmentStorageMeta) newItem.getItemMeta();
+
+            for (Map.Entry<Enchantment, Integer> entry : metaRef.getStoredEnchants().entrySet())
+            {
+                metaCopy.addStoredEnchant(entry.getKey(), entry.getValue(), false);
+            }
+            newItem.setItemMeta(metaCopy);
+        }
+
         return newItem;
     }
 }
+
