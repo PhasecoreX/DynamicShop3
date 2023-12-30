@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 
@@ -241,11 +242,20 @@ public final class ItemPalette extends InGameUI
         }
     }
 
-    public ItemStack getPotionItemStack(Material potionMat, PotionType type)
+    public ItemStack getPotionItemStack_deprecated(Material potionMat, PotionType type, boolean extend, boolean upgraded)
     {
         ItemStack potion = new ItemStack(potionMat, 1);
         PotionMeta meta = (PotionMeta) potion.getItemMeta();
-        meta.setBasePotionType(type);
+        meta.setBasePotionData(new PotionData(type, extend, upgraded));
+        potion.setItemMeta(meta);
+        return potion;
+    }
+
+    public ItemStack getPotionItemStack_mc1_20_2_or_newer(Material potionMat, PotionType potionType)
+    {
+        ItemStack potion = new ItemStack(potionMat, 1);
+        PotionMeta meta = (PotionMeta) potion.getItemMeta();
+        meta.setBasePotionType(potionType);
         potion.setItemMeta(meta);
         return potion;
     }
@@ -271,17 +281,40 @@ public final class ItemPalette extends InGameUI
             }
         }
 
-        // Add potions
-        Material[] potionMat = {Material.POTION, Material.LINGERING_POTION, Material.SPLASH_POTION};
-        for (Material mat : potionMat)
+        try
         {
-            for (PotionType pt : PotionType.values())
+            // 1.20.2 or newer
+            Material[] potionMat = {Material.POTION, Material.LINGERING_POTION, Material.SPLASH_POTION};
+            for (Material mat : potionMat)
             {
-                if (PotionType.UNCRAFTABLE.equals(pt))
+                for (PotionType pt : PotionType.values())
                 {
-                    continue;
+                    allItems.add(getPotionItemStack_mc1_20_2_or_newer(mat, pt));
                 }
-                allItems.add(getPotionItemStack(mat, pt));
+            }
+        } catch (NoSuchMethodError ignored)
+        {
+            Material[] potionMat = {Material.POTION, Material.LINGERING_POTION, Material.SPLASH_POTION};
+            for (Material mat : potionMat)
+            {
+                for (PotionType pt : PotionType.values())
+                {
+                    if (pt.isExtendable() && pt.isUpgradeable())
+                    {
+                        allItems.add(getPotionItemStack_deprecated(mat, pt, true, false));
+                        allItems.add(getPotionItemStack_deprecated(mat, pt, false, true));
+                    }
+                    else if (pt.isExtendable())
+                    {
+                        allItems.add(getPotionItemStack_deprecated(mat, pt, true, false));
+                    }
+                    else if (pt.isUpgradeable())
+                    {
+                        allItems.add(getPotionItemStack_deprecated(mat, pt, false, true));
+                    }
+
+                    allItems.add(getPotionItemStack_deprecated(mat, pt, false, false));
+                }
             }
         }
 
@@ -292,7 +325,13 @@ public final class ItemPalette extends InGameUI
             {
                 continue;
             }
-            allItems.add(getPotionItemStack(Material.TIPPED_ARROW, pt));
+            try
+            {
+                allItems.add(getPotionItemStack_mc1_20_2_or_newer(Material.TIPPED_ARROW, pt));
+            } catch (NoSuchMethodError ignored)
+            {
+                break;
+            }
         }
 
         // Add enchanted books
@@ -744,4 +783,3 @@ public final class ItemPalette extends InGameUI
         return newItem;
     }
 }
-
