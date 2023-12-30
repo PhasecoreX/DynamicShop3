@@ -46,6 +46,7 @@ public final class ConfigUtil
         DynamicShop.plugin.reloadConfig();
 
         config = DynamicShop.plugin.getConfig();
+        config.options().copyDefaults(true);
 
         try
         {
@@ -71,6 +72,7 @@ public final class ConfigUtil
         ValidateAndApply();
         SetConfigVersion(ConfigUtil.PluginConfigVersion);
         Save();
+
     }
 
     public static void Save()
@@ -217,6 +219,36 @@ public final class ConfigUtil
     public static void SetShopInfoButtonIcon(String value)
     {
         config.set("UI.ShopInfoButtonIcon", value);
+    }
+
+    public static String GetBalanceButtonIcon()
+    {
+        return config.getString("UI.BalanceButtonIcon");
+    }
+
+    public static void SetBalanceButtonIcon(String value)
+    {
+        config.set("UI.BalanceButtonIcon", value);
+    }
+
+    public static String GetSellToggleButtonIcon()
+    {
+        return config.getString("UI.SellToggleButtonIcon");
+    }
+
+    public static void SetSellToggleButtonIcon(String value)
+    {
+        config.set("UI.SellToggleButtonIcon", value);
+    }
+
+    public static String GetBuyToggleButtonIcon()
+    {
+        return config.getString("UI.BuyToggleButtonIcon");
+    }
+
+    public static void SetBuyToggleButtonIcon(String value)
+    {
+        config.set("UI.BuyToggleButtonIcon", value);
     }
 
     public static String GetIntFormat()

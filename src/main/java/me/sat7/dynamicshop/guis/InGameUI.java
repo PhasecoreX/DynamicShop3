@@ -105,7 +105,20 @@ public class InGameUI
     @SuppressWarnings({"UnusedReturnValue", "SameParameterValue"})
     protected ItemStack CreateButton(int slotIndex, Material icon, String name, ArrayList<String> lore, int amount)
     {
-        ItemStack itemStack = ItemsUtil.createItemStack(icon, null, name, lore, amount);
+        ArrayList<String> finalLore = new ArrayList<>();
+        for(String loreLine : lore)
+        {
+            if (loreLine.contains("\n"))
+            {
+                finalLore.addAll(Arrays.asList(loreLine.split("\n")));
+            }
+            else
+            {
+                finalLore.add(loreLine);
+            }
+        }
+
+        ItemStack itemStack = ItemsUtil.createItemStack(icon, null, name, finalLore, amount);
         inventory.setItem(slotIndex, itemStack);
 
         return itemStack;
@@ -151,6 +164,45 @@ public class InGameUI
         {
             mat = Material.GOLD_BLOCK;
             ConfigUtil.SetShopInfoButtonIcon("GOLD_BLOCK");
+            ConfigUtil.Save();
+        }
+        return mat;
+    }
+
+    public static Material GetBalanceButtonIconMat()
+    {
+        String iconName = ConfigUtil.GetBalanceButtonIcon();
+        Material mat = Material.getMaterial(iconName);
+        if (mat == null)
+        {
+            mat = Material.EMERALD;
+            ConfigUtil.SetBalanceButtonIcon("EMERALD");
+            ConfigUtil.Save();
+        }
+        return mat;
+    }
+
+    public static Material GetSellToggleButtonIconMat()
+    {
+        String iconName = ConfigUtil.GetSellToggleButtonIcon();
+        Material mat = Material.getMaterial(iconName);
+        if (mat == null)
+        {
+            mat = Material.GREEN_STAINED_GLASS;
+            ConfigUtil.SetSellToggleButtonIcon("GREEN_STAINED_GLASS");
+            ConfigUtil.Save();
+        }
+        return mat;
+    }
+
+    public static Material GetBuyToggleButtonIconMat()
+    {
+        String iconName = ConfigUtil.GetBuyToggleButtonIcon();
+        Material mat = Material.getMaterial(iconName);
+        if (mat == null)
+        {
+            mat = Material.RED_STAINED_GLASS;
+            ConfigUtil.SetBuyToggleButtonIcon("RED_STAINED_GLASS");
             ConfigUtil.Save();
         }
         return mat;
